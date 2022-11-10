@@ -1,0 +1,24 @@
+{
+  "schema": {
+    "name": "string",
+    "id": "number"
+  },
+  "data": [
+    {
+      "name": "FooMoney",
+      "id": 1,
+      "Prop1": 5,
+      "TestObject": {
+        "MyProp": true
+      }
+    },
+    {
+      "name": "FooMoneyMooMoney",
+      "Prop1": 7,
+      "TestObject": {
+        "MyProp": true
+      },
+      "id": 2
+    }
+  ]
+}
