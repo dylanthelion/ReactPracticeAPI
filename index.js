@@ -48,7 +48,7 @@ models.forEach(model => {
     var newItem = req.body;
     fs.readFile( model.path, 'utf8', function (err, data) {
        var items = JSON.parse(data);
-       maxId = Math.max(...items.data.map(o => o.id))
+       maxId = items.data.length == 0 ? 0 : Math.max(...items.data.map(o => o.id));
        newItem.id = maxId + 1;
        items.data.push(newItem);
        fs.writeFile(model.path, JSON.stringify(items,null,2), function writeJSON(err) {
