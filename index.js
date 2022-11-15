@@ -2,6 +2,7 @@ var express = require('express');
 var app = express();
 var fs = require("fs");
 var bodyParser = require('body-parser')
+const cors = require('cors');
 
 var jsonParser = bodyParser.json()
 var urlencodedParser = bodyParser.urlencoded({ extended: false })
@@ -19,6 +20,7 @@ function getSubDirectories(srcpath) {
 }
 
 const models = getDirectories.map(dir => getAllFiles(dir)).flat();
+app.use(cors());
 
 /*
     Takes the flattened collection of models and the paths to their json files, and generates CRUD endpoints for each.
@@ -99,6 +101,8 @@ models.forEach(model => {
 
 
 
+
+
 var server = app.listen(8081, function () {
 });
 
@@ -109,11 +113,13 @@ var server = app.listen(8081, function () {
 */
 function getAllFiles (dir){
     const files = fs.readdirSync(dir);
+    var dirs = dir.split('/');
+
     return files.map(file => {
       return {
         name: file.substr(0, file.indexOf('.')),
         path: dir + '/' + file,
-        developer: dir.split('/')[1]
+        developer: dirs[dirs.length - 1]
       }
     });
 }
