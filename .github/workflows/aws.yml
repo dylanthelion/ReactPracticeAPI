@@ -1,0 +1,31 @@
+name: Deploy to Amazon EC2
+
+on:
+  push:
+    branches: [ "master" ]
+
+env:
+  AWS_REGION: ${{ env.AWS_REGION }}
+
+permissions:
+  contents: read
+
+jobs:
+  deploy:
+    name: Deploy
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v3
+      
+    - name: TriggerSSH
+      uses: appleboy/ssh-action@v0.1.7
+      with:
+        host: ${{ secrets.HOST }}
+        username: ${{ secrets.EC2_USERNAME }}
+        key: ${{ secrets.RSA_KEY }}
+        port: ${{ secrets.SSH_PORT }}
+        script: |
+          cd /usr/bin
+          npm run getLatest
