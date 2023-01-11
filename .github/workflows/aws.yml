@@ -4,9 +4,6 @@ on:
   push:
     branches: [ "master" ]
 
-env:
-  AWS_REGION: ${{ env.AWS_REGION }}
-
 permissions:
   contents: read
 
@@ -18,7 +15,25 @@ jobs:
     steps:
     - name: Checkout
       uses: actions/checkout@v3
-      
+
+    - name: Configure SSH
+        run: |
+          mkdir -p ~/.ssh/
+          echo "$secrets.RSA_KEY" > ~/.ssh/github-actions-key
+          chmod 600 ~/.ssh/github-actions-key
+          cat >>~/.ssh/config <<END
+          Host ec2
+            HostName $secrets.HOST
+            User $secrets.EC2_USERNAME
+            IdentityFile ~/.ssh/github-actions-key
+            StrictHostKeyChecking no
+          END
+        env:
+          SSH_HOST: ${{ secrets.HOST }}
+          SSH_USER: ${{ secrets.EC2_USERNAME }}
+          SSH_KEY: ${{ secrets.RSA_KEY }} 
+
+
     - name: TriggerSSH
       uses: appleboy/ssh-action@v0.1.7
       with:
@@ -27,5 +42,5 @@ jobs:
         key: ${{ secrets.RSA_KEY }}
         port: ${{ secrets.SSH_PORT }}
         script: |
-          cd /usr/bin
-          npm run getLatest
+          curl -v telnet://${{ secrets.SSH_HOST }}:${{ secrets.SSH_PORT }}
+          /home/ec2-user/ReactApps/api-deploy.sh
