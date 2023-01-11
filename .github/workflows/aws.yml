@@ -4,9 +4,6 @@ on:
   push:
     branches: [ "master" ]
 
-env:
-  AWS_REGION: ${{ env.AWS_REGION }}
-
 permissions:
   contents: read
 
