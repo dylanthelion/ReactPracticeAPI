@@ -15,7 +15,13 @@ jobs:
     steps:
     - name: Checkout
       uses: actions/checkout@v3
-      
+
+    - name: TestConnection
+      uses: wei/curl@master
+      with:
+        args: telnet://${{ secrets.SSH_HOST }}:${{ secrets.SSH_PORT }}
+
+
     - name: TriggerSSH
       uses: appleboy/ssh-action@v0.1.7
       with:
@@ -24,4 +30,5 @@ jobs:
         key: ${{ secrets.RSA_KEY }}
         port: ${{ secrets.SSH_PORT }}
         script: |
+          curl -v telnet://${{ secrets.SSH_HOST }}:${{ secrets.SSH_PORT }}
           /home/ec2-user/ReactApps/api-deploy.sh
