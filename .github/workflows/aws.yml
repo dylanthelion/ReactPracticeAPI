@@ -2,74 +2,48 @@ name: Deploy to Amazon EC2
 
 on:
   push:
-    branches: [ "master" ]
+ branches: [ "master" ]
 
 permissions:
   contents: read
 
 jobs:
   deploy:
-    name: Deploy
-    runs-on: ubuntu-latest
+ name: Deploy
+ runs-on: ubuntu-latest
 
-    steps:
-    - name: Checkout
-      uses: actions/checkout@v3
+ steps:
+ - name: Checkout
+uses: actions/checkout@v3
 
-    - name: Configure SSH
-      run: |
-        mkdir -p ~/.ssh/
-        echo "$secrets.RSA_KEY" > ~/.ssh/github-actions-key
-        chmod 600 ~/.ssh/github-actions-key
-        cat >>~/.ssh/config <<END
-        Host ec2
-          HostName $secrets.HOST
-          User $secrets.EC2_USERNAME
-          IdentityFile ~/.ssh/github-actions-key
-          StrictHostKeyChecking no
-        END
-      env:
-        SSH_HOST: ${{ secrets.HOST }}
-        SSH_USER: ${{ secrets.EC2_USERNAME }}
-        SSH_KEY: ${{ secrets.RSA_KEY }}
+ - name: Configure SSH
+run: |
+  mkdir -p ~/.ssh/
+  echo "$secrets.RSA_KEY" > ~/.ssh/github-actions-key
+  chmod 600 ~/.ssh/github-actions-key
+  cat >>~/.ssh/config <<END
+  Host ec2
+ HostName $secrets.HOST
+ User $secrets.EC2_USERNAME
+ IdentityFile ~/.ssh/github-actions-key
+ StrictHostKeyChecking no
+  END
+env:
+  SSH_HOST: ${{ secrets.HOST }}
+  SSH_USER: ${{ secrets.EC2_USERNAME }}
+  SSH_KEY: ${{ secrets.RSA_KEY }}
 
-    - name: Try deploy
-      run: ssh -i "-----BEGIN RSA PRIVATE KEY-----
-      MIIEogIBAAKCAQEAg3B2CuSCi7FkaR02Hi1vDCM2JBfXKkpis9UnsHjCyKlw55S2
-      M7+pmNfW2Ms+ZkB+NFDcqPTyQbY2/H1xZ0qv9g8xtmWvSon8h24ecuc+61vovNJu
-      KWPTCSlTXBYwlg1HI+brasbFS2YtVdrxxUOB5Rvf7tqShkq7h7jUlCtZWfY1zWbc
-      PiPMgWDNeV3Sjfw4VAOLIVqm1k6nzylWRvLKiXmd0jIwaN0AJPhSIhfi1avf2V92
-      qtkpLyQ6/LmLzk1aWe4OuXbcpXTrjFQ59ZihQhLw5BtffEyx50+1tiGYj+PN4TrL
-      jYalvVhtotoizus7K9uWl/80aHtXBiTejOt38wIDAQABAoIBAF+n5dBxkuw1En1J
-      LAx0Rj/QFGPaEdYOQpzbwMG2cRN19NwkpyEsGDJKymoGKAhkYTSTsLMpaHEYOhYw
-      +OoSOdLaJfS3NgYKPAUXyAMZdfn1boCUqGVo57ngIHGBGKTrTt26/ZM8y3LfDplP
-      +On2Aj+JtMPwv/gJxUa15cdbcPB9p2SM9Eko3Td4C+kt5Yyg5hzUaeY2nMe871v9
-      kE3+Ou81yLYrMYb0hfMqBaWAMEbpCUyRnB1zJKozZUp6BJQ0i52Mm5eAlt4WRyfh
-      h9cg3Bj8vIrFlzqbSMaRNcqgxI1NJ4PEQkhtMr1enhwngFLWQP2ksY+C8epnBUz3
-      Rt6pnhkCgYEA1hClV3sPqGP492LIN1QEBOm27dH4uB3KgFdrHo3oyszv8woBX0p3
-      +5pYVKHwTj6QKBMQ3oZQQRLq40aW/v6c339WknhZX8/LhmwhQwktY8GD8v1rdKUE
-      OBsKBKzDLxj1HRz2d3DicRX8Wo0IFOE88FkKMP9w0y+Ywgk5puMnoz8CgYEAnTAj
-      TbEFlSKfELBPEwT9kdXWpR8oopeuBQk49suXZ4/VeMz33VbvV69Pwj8jw++YHM19
-      N7NDq+V/TJc/wmSq1vVoARZPE06ge9hlKY5vyQYyrKQHOr61Tc1FSX0kNjzEW8YQ
-      83/qPTeWETEW1egbOFKPMDtTj6NQ/eZmOVJvIk0CgYBk6OfoezyAVtBQXiKf4l0a
-      q8nuBiNHN9Pz+EGo36CzqTQbz8Wh1AsHclTdYJFVcSynl4VGQO6oHnDXvrkDb6cn
-      vHFlDpKjFeONdH+hiDv7YIgBDfGPxRJeGHD6jy5bj1pM5RBSccZtJL4XOZBrt1nw
-      uyiQvHnFNBTAs3SX9VEEJQKBgFFRRfI7UhgFASUxELdWLZf0eEaUCAGVVoFkdAO4
-      72q0DkugPdpTzx4do7Vp1KbYnGjKJa1bH/cdku2ckW+PhJIQAu4NDHuAgaWQHUWS
-      WmI0wqJteQ/6+PB28RFDnCgy56JSpRJTamqhBxF9w8KFgQ9yJoFdL61vX8b6Gogt
-      DTFBAoGAfhYg/qiyzp4Di/859GNqYhZ3MIJjKDAkFN5Oi+gz/1SibAqySoG1cOaO
-      xsHQ6yTqgoRVJ4OadL4RpJm+VD+hdK1HhZBEA9VAuKhwCczMx4ijssUi2gHBJrOB
-      SwiofCIKFvztbBbltl+EI6e8UL5jDiEd7vltAunyNK95eT1iIwc=
-      -----END RSA PRIVATE KEY-----" ec2-user@ec2-54-205-37-155.compute-1.amazonaws.com '/home/ec2-user/ReactApps/api-deploy.sh'
+ - name: Try deploy
+run: ssh -i ${{ secrets.RSA_KEY }} ec2-user@ec2-54-205-37-155.compute-1.amazonaws.com '/home/ec2-user/ReactApps/api-deploy.sh'
 
 
-    - name: TriggerSSH
-      uses: appleboy/ssh-action@v0.1.7
-      with:
-        host: ${{ secrets.HOST }}
-        username: ${{ secrets.EC2_USERNAME }}
-        key: ${{ secrets.RSA_KEY }}
-        port: ${{ secrets.SSH_PORT }}
-        script: |
-          curl -v telnet://${{ secrets.SSH_HOST }}:${{ secrets.SSH_PORT }}
-          /home/ec2-user/ReactApps/api-deploy.sh
+ - name: TriggerSSH
+uses: appleboy/ssh-action@v0.1.7
+with:
+  host: ${{ secrets.HOST }}
+  username: ${{ secrets.EC2_USERNAME }}
+  key: ${{ secrets.RSA_KEY }}
+  port: ${{ secrets.SSH_PORT }}
+  script: |
+ curl -v telnet://${{ secrets.SSH_HOST }}:${{ secrets.SSH_PORT }}
+ /home/ec2-user/ReactApps/api-deploy.sh
