@@ -2,48 +2,48 @@ name: Deploy to Amazon EC2
 
 on:
   push:
- branches: [ "master" ]
+    branches: [ "master" ]
 
 permissions:
   contents: read
 
 jobs:
   deploy:
- name: Deploy
- runs-on: ubuntu-latest
+    name: Deploy
+    runs-on: ubuntu-latest
 
- steps:
- - name: Checkout
-uses: actions/checkout@v3
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v3
 
- - name: Configure SSH
-run: |
-  mkdir -p ~/.ssh/
-  echo "$secrets.RSA_KEY" > ~/.ssh/github-actions-key
-  chmod 600 ~/.ssh/github-actions-key
-  cat >>~/.ssh/config <<END
-  Host ec2
- HostName $secrets.HOST
- User $secrets.EC2_USERNAME
- IdentityFile ~/.ssh/github-actions-key
- StrictHostKeyChecking no
-  END
-env:
-  SSH_HOST: ${{ secrets.HOST }}
-  SSH_USER: ${{ secrets.EC2_USERNAME }}
-  SSH_KEY: ${{ secrets.RSA_KEY }}
+    - name: Configure SSH
+      run: |
+        mkdir -p ~/.ssh/
+        echo "$secrets.RSA_KEY" > ~/.ssh/github-actions-key
+        chmod 600 ~/.ssh/github-actions-key
+        cat >>~/.ssh/config <<END
+        Host ec2
+          HostName $secrets.HOST
+          User $secrets.EC2_USERNAME
+          IdentityFile ~/.ssh/github-actions-key
+          StrictHostKeyChecking no
+        END
+      env:
+        SSH_HOST: ${{ secrets.HOST }}
+        SSH_USER: ${{ secrets.EC2_USERNAME }}
+        SSH_KEY: ${{ secrets.RSA_KEY }}
 
- - name: Try deploy
-run: ssh -i ${{ secrets.RSA_KEY }} ec2-user@ec2-54-205-37-155.compute-1.amazonaws.com '/home/ec2-user/ReactApps/api-deploy.sh'
+    - name: Try deploy
+      run: ssh -i ${{ secrets.RSA_KEY }} ec2-user@ec2-54-205-37-155.compute-1.amazonaws.com '/home/ec2-user/ReactApps/api-deploy.sh'
 
 
- - name: TriggerSSH
-uses: appleboy/ssh-action@v0.1.7
-with:
-  host: ${{ secrets.HOST }}
-  username: ${{ secrets.EC2_USERNAME }}
-  key: ${{ secrets.RSA_KEY }}
-  port: ${{ secrets.SSH_PORT }}
-  script: |
- curl -v telnet://${{ secrets.SSH_HOST }}:${{ secrets.SSH_PORT }}
- /home/ec2-user/ReactApps/api-deploy.sh
+    - name: TriggerSSH
+      uses: appleboy/ssh-action@v0.1.7
+      with:
+        host: ${{ secrets.HOST }}
+        username: ${{ secrets.EC2_USERNAME }}
+        key: ${{ secrets.RSA_KEY }}
+        port: ${{ secrets.SSH_PORT }}
+        script: |
+          curl -v telnet://${{ secrets.SSH_HOST }}:${{ secrets.SSH_PORT }}
+          /home/ec2-user/ReactApps/api-deploy.sh
