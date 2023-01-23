@@ -34,7 +34,7 @@ jobs:
         SSH_KEY: ${{ secrets.RSA_KEY }}
 
     - name: Try deploy
-        run: ssh ec2 '/home/ec2-user/ReactApps/api-deploy.sh'
+      run: ssh ec2 '/home/ec2-user/ReactApps/api-deploy.sh'
 
 
     - name: TriggerSSH
