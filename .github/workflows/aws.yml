@@ -20,6 +20,9 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - name: run tests
+      with:
+        node-version: 18.x
+        cache: 'npm'
       run: npm test
   deploy:
     name: Try deploy
