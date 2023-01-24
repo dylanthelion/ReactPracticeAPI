@@ -15,7 +15,7 @@ jobs:
     steps:
     - name: Checkout
       uses: actions/checkout@v3
-    -name: Test 
+    - name: Test
       run: npm test
     - name: Try deploy
       run: ssh -i ${{ secrets.RSA_KEY }} ec2-user@ec2-54-205-37-155.compute-1.amazonaws.com '/home/ec2-user/ReactApps/api-deploy.sh'
