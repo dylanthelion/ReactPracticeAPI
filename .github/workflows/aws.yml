@@ -8,25 +8,31 @@ permissions:
   contents: read
 
 jobs:
-  deploy:
+  pull:
     name: Deploy
     runs-on: ubuntu-latest
 
     steps:
     - name: Checkout
       uses: actions/checkout@v3
-    - name: Test
+  Test:
+    name: Test
+    steps:
+    - name: run tests
       run: npm test
-    - name: Try deploy
-      needs: Test
+  deploy:
+    name: Try deploy
+    needs: Test
+    steps:
+    - name: ssh check
       run: ssh -i ${{ secrets.RSA_KEY }} ec2-user@ec2-54-205-37-155.compute-1.amazonaws.com '/home/ec2-user/ReactApps/api-deploy.sh'
-          cat >>~/.ssh/config <<END
-          Host ec2
-            HostName $secrets.HOST
-            User $secrets.EC2_USERNAME
-            IdentityFile ~/.ssh/github-actions-key
-            StrictHostKeyChecking no
-          END
+           cat >>~/.ssh/config <<END
+             Host ec2
+             HostName $secrets.HOST
+             User $secrets.EC2_USERNAME
+             IdentityFile ~/.ssh/github-actions-key
+             StrictHostKeyChecking no
+           END
       env:
         SSH_HOST: ${{ secrets.HOST }}
         SSH_USER: ${{ secrets.EC2_USERNAME }}
@@ -34,7 +40,6 @@ jobs:
 
 
     - name: TriggerSSH
-      needs: Try deploy
       uses: appleboy/ssh-action@v0.1.7
       with:
         host: ${{ secrets.HOST }}
