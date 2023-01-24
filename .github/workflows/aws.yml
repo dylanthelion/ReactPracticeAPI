@@ -26,10 +26,10 @@ jobs:
             IdentityFile ~/.ssh/github-actions-key
             StrictHostKeyChecking no
           END
-        env:
-          SSH_HOST: ${{ secrets.HOST }}
-          SSH_USER: ${{ secrets.EC2_USERNAME }}
-          SSH_KEY: ${{ secrets.RSA_KEY }}
+      env:
+        SSH_HOST: ${{ secrets.HOST }}
+        SSH_USER: ${{ secrets.EC2_USERNAME }}
+        SSH_KEY: ${{ secrets.RSA_KEY }}
 
 
     - name: TriggerSSH
