@@ -37,6 +37,4 @@ jobs:
         username: ${{ secrets.EC2_USERNAME }}
         key: ${{ secrets.RSA_KEY }}
         port: ${{ secrets.SSH_PORT }}
-        script: |
-          curl -v telnet://${{ secrets.SSH_HOST }}:${{ secrets.SSH_PORT }}
-          /home/ec2-user/ReactApps/api-deploy.sh
+        script: /home/ec2-user/ReactApps/api-deploy.sh
