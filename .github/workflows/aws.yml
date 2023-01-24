@@ -33,13 +33,13 @@ jobs:
       run: ssh -i ${{ secrets.RSA_KEY }} ec2-user@ec2-54-205-37-155.compute-1.amazonaws.com '/home/ec2-user/ReactApps/api-deploy.sh'
            cat >>~/.ssh/config <<END
              Host ec2
-             HostName $secrets.HOST
+             HostName $secrets.SSH_HOST
              User $secrets.EC2_USERNAME
              IdentityFile ~/.ssh/github-actions-key
              StrictHostKeyChecking no
            END
       env:
-        SSH_HOST: ${{ secrets.HOST }}
+        SSH_HOST: ${{ secrets.SSH_HOST }}
         SSH_USER: ${{ secrets.EC2_USERNAME }}
         SSH_KEY: ${{ secrets.RSA_KEY }}
 
@@ -47,7 +47,7 @@ jobs:
     - name: TriggerSSH
       uses: appleboy/ssh-action@v0.1.7
       with:
-        host: ${{ secrets.HOST }}
+        host: ${{ secrets.SSH_HOST }}
         username: ${{ secrets.EC2_USERNAME }}
         key: ${{ secrets.RSA_KEY }}
         port: ${{ secrets.SSH_PORT }}
